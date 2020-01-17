@@ -52,7 +52,7 @@ jobs:
         CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu-$(VERSION):/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
           cp -r /tmp/src/. . && \
           rm -rf ./dist && \
-          export PATH=/root/.cargo/bin:\$$PATH && \
+          export PATH=/root/.cargo/bin:$$PATH && \
           export USER=root && \
           curl https://sh.rustup.rs -sSf | sh -s -- -y && \
           yum install zip -y && \
