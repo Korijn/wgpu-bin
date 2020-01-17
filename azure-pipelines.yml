@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - v*
+
+variables:
+  VERSION: master
+
+jobs:
+- job: Build
+  strategy:
+    matrix:
+      Linux:
+        vmImage: ubuntu-16.04
+      MacOS:
+        vmImage: macOS-10.14
+        MACOSX_DEPLOYMENT_TARGET: '10.13'
+        RUST_TOOLCHAIN: stable
+      Windows:
+        vmImage: vs2017-win2016
+        RUST_TOOLCHAIN: stable-msvc
+      Windows-32:
+        vmImage: vs2017-win2016
+        RUST_TOOLCHAIN: stable-i686-pc-windows-msvc
+  pool:
+    vmImage: $(vmImage)
+  steps:
+  - task: Bash@3
+    displayName: Get wgpu src
+    inputs:
+      targetType: inline
+      script: |
+        set -ex
+        curl -sSL -o wgpu.zip https://github.com/gfx-rs/wgpu/archive/$(VERSION).zip
+        unzip wgpu.zip
+        rm wgpu.zip
+  - task: Bash@3
+    displayName: Build manylinux
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+    inputs:
+      targetType: inline
+      script: |
+        set -ex
+        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu-$(VERSION):/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
+          cp -r /tmp/src/. . && \
+          rm -rf ./dist && \
+          export PATH=/root/.cargo/bin:\$$PATH && \
+          export USER=root && \
+          curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+          yum install zip -y && \
+          make package")
+        docker start -ai $CID
+        mkdir -p dist
+        docker cp $CID:/tmp/wgpu/dist/. dist/.
+        docker rm $CID
+  - task: Bash@3
+    displayName: Build other
+    condition: and(succeeded(), ne(variables['Agent.OS'], 'Linux'))
+    inputs:
+      targetType: inline
+      script: |
+        set -ex
+        pushd wgpu-$(VERSION)
+        rustup default $(RUST_TOOLCHAIN)
+        make package
+        popd
+        mkdir -p dist
+        cp -r wgpu-$(VERSION)/dist ./dist
+  - task: PublishBuildArtifacts@1
+    displayName: Publish
+    inputs:
+      pathtoPublish: dist
+      artifactName: dist
