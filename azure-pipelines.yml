@@ -69,6 +69,7 @@ jobs:
       script: |
         set -ex
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain $(RUST_TOOLCHAIN)
+        export PATH=$HOME/.cargo/bin:$PATH
         pushd wgpu-$(VERSION)
         make package
         popd
