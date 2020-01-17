@@ -47,7 +47,7 @@ jobs:
         unzip wgpu.zip
         rm wgpu.zip
   - task: Bash@3
-    displayName: Build manylinux
+    displayName: Docker build
     condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
     inputs:
       targetType: inline
@@ -58,7 +58,7 @@ jobs:
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
           export USER=root && \
-          curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
           rustup default $(RUST_TOOLCHAIN) && \
           yum install zip -y && \
           make package")
@@ -67,7 +67,7 @@ jobs:
         docker cp $CID:/tmp/wgpu/dist/. dist/.
         docker rm $CID
   - task: Bash@3
-    displayName: Build other
+    displayName: Host build
     condition: and(succeeded(), ne(variables['Agent.OS'], 'Linux'))
     inputs:
       targetType: inline
