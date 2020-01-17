@@ -15,16 +15,21 @@ jobs:
     matrix:
       Linux:
         vmImage: ubuntu-16.04
+        RUST_TOOLCHAIN: stable
+        ARCH: 64
       MacOS:
         vmImage: macOS-10.14
         MACOSX_DEPLOYMENT_TARGET: '10.13'
         RUST_TOOLCHAIN: stable
+        ARCH: 64
       Windows:
         vmImage: vs2017-win2016
         RUST_TOOLCHAIN: stable-msvc
+        ARCH: 64
       Windows-32:
         vmImage: vs2017-win2016
         RUST_TOOLCHAIN: stable-i686-pc-windows-msvc
+        ARCH: 32
   pool:
     vmImage: $(vmImage)
   steps:
@@ -63,8 +68,8 @@ jobs:
       targetType: inline
       script: |
         set -ex
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -- -y --default-toolchain $$(RUST_TOOLCHAIN)
         pushd wgpu-$(VERSION)
-        rustup default $(RUST_TOOLCHAIN)
         make package
         popd
         mkdir -p dist
