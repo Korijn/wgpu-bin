@@ -53,9 +53,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        curl -sSL -o wgpu.zip https://github.com/gfx-rs/wgpu/archive/$(VERSION).zip
-        unzip wgpu.zip
-        rm wgpu.zip
+        git clone -b $(VERSION) --depth=1 https://github.com/gfx-rs/wgpu.git
   - task: Bash@3
     displayName: Docker build
     condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
