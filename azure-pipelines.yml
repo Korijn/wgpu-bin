@@ -2,8 +2,6 @@ trigger:
   branches:
     include:
     - master
-  tags:
-    include:
     - v*
 
 schedules:
@@ -103,3 +101,24 @@ jobs:
     inputs:
       pathtoPublish: dist
       artifactName: dist
+- job: Release
+  dependsOn: Build
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: Download
+    inputs:
+      artifactName: dist
+      downloadPath: .
+  - task: GithubRelease@1
+    displayName: GitHub
+    inputs:
+      gitHubConnection: Korijn
+      repositoryName: 'Korijn/wgpu-bin'
+      assets: |
+        dist/*.zip
+      action: edit
+      tag: $(VERSION)
+      addChangeLog: false
+      assetUploadMode: delete
