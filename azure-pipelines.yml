@@ -68,7 +68,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -- -y --default-toolchain $$(RUST_TOOLCHAIN)
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain $(RUST_TOOLCHAIN)
         pushd wgpu-$(VERSION)
         make package
         popd
