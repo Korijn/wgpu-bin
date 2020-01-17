@@ -114,7 +114,7 @@ jobs:
   - task: GithubRelease@1
     displayName: GitHub
     inputs:
-      gitHubConnection: Korijn
+      gitHubConnection: github.com_Korijn
       repositoryName: 'Korijn/wgpu-bin'
       assets: |
         dist/*.zip
