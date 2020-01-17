@@ -58,7 +58,7 @@ jobs:
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
           export USER=root && \
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+          curl --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
           rustup default $(RUST_TOOLCHAIN) && \
           yum install zip -y && \
           make package")
