@@ -6,8 +6,15 @@ trigger:
     include:
     - v*
 
+schedules:
+- cron: "0 0 * * *"
+  displayName: Nightly
+  branches:
+    include:
+    - master
+
 variables:
-  VERSION: master
+  VERSION: $(Build.SourceBranchName)
 
 jobs:
 - job: Build
@@ -17,19 +24,28 @@ jobs:
         vmImage: ubuntu-16.04
         RUST_TOOLCHAIN: stable
         ARCH: 64
+        OS_NAME: linux
+      # Linux-32: rust toolchain is currently broken :(
+      #   vmImage: ubuntu-16.04
+      #   RUST_TOOLCHAIN: stable-i686-unknown-linux-gnu
+      #   ARCH: 32
+      #   OS_NAME: linux
       MacOS:
         vmImage: macOS-10.14
-        MACOSX_DEPLOYMENT_TARGET: '10.13'
         RUST_TOOLCHAIN: stable
         ARCH: 64
+        OS_NAME: macos
+        MACOSX_DEPLOYMENT_TARGET: '10.13'
       Windows:
         vmImage: vs2017-win2016
         RUST_TOOLCHAIN: stable-msvc
         ARCH: 64
+        OS_NAME: windows
       Windows-32:
         vmImage: vs2017-win2016
         RUST_TOOLCHAIN: stable-i686-pc-windows-msvc
         ARCH: 32
+        OS_NAME: windows
   pool:
     vmImage: $(vmImage)
   steps:
@@ -81,7 +97,7 @@ jobs:
       script: |
         set -ex
         mkdir -p ./dist
-        mv wgpu-$(VERSION)/dist/*release*.zip ./dist/wgpu-$(Agent.OS)-$(ARCH).zip
+        mv wgpu-$(VERSION)/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
