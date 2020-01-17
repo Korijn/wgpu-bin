@@ -17,6 +17,10 @@ jobs:
         vmImage: ubuntu-16.04
         RUST_TOOLCHAIN: stable
         ARCH: 64
+      Linux:
+        vmImage: ubuntu-16.04
+        RUST_TOOLCHAIN: stable-i686-unknown-linux-gnu
+        ARCH: 32
       MacOS:
         vmImage: macOS-10.14
         MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -55,6 +59,7 @@ jobs:
           export PATH=/root/.cargo/bin:\$PATH && \
           export USER=root && \
           curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+          rustup default $(RUST_TOOLCHAIN) && \
           yum install zip -y && \
           make package")
         docker start -ai $CID
@@ -75,7 +80,7 @@ jobs:
         make package
         popd
         mkdir -p dist
-        cp -r wgpu-$(VERSION)/dist ./dist
+        mv wgpu-$(VERSION)/*release*.zip ./dist/wgpu-$(Agent.OS)-$(ARCH).zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
