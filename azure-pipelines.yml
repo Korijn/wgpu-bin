@@ -61,7 +61,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu-$(VERSION):/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
+        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu:/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
           cp -r /tmp/src/. . && \
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
@@ -71,8 +71,8 @@ jobs:
           yum install zip -y && \
           make package")
         docker start -ai $CID
-        mkdir -p wgpu-$(VERSION)/dist
-        docker cp $CID:/tmp/wgpu/dist/. wgpu-$(VERSION)/dist/.
+        mkdir -p wgpu/dist
+        docker cp $CID:/tmp/wgpu/dist/. wgpu/dist/.
         docker rm $CID
   - task: Bash@3
     displayName: Host build
@@ -84,7 +84,7 @@ jobs:
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         export PATH=$HOME/.cargo/bin:$PATH
         rustup default $(RUST_TOOLCHAIN)
-        cd wgpu-$(VERSION)
+        cd wgpu
         make package
   - task: Bash@3
     displayName: Pre-publish
@@ -93,7 +93,7 @@ jobs:
       script: |
         set -ex
         mkdir -p ./dist
-        mv wgpu-$(VERSION)/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
+        mv wgpu/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
