@@ -18,11 +18,13 @@ jobs:
         RUST_TOOLCHAIN: stable
         ARCH: 64
         OS_NAME: linux
+        IMAGE: manylinux2010_x86_64
       Linux-32:
         vmImage: ubuntu-16.04
         RUST_TOOLCHAIN: stable-i686-unknown-linux-gnu
         ARCH: 32
         OS_NAME: linux
+        IMAGE: manylinux2010_i686
       MacOS:
         vmImage: macOS-10.14
         RUST_TOOLCHAIN: stable
@@ -56,12 +58,13 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu:/tmp/src:ro quay.io/pypa/manylinux2010_x86_64 bash -c "\
+        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu:/tmp/src:ro quay.io/pypa/$(IMAGE) bash -c "\
           cp -r /tmp/src/. . && \
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
           export USER=root && \
-          curl --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+          curl --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none && \
+          rustup toolchain install --no-self-update $(RUST_TOOLCHAIN) && \
           rustup default $(RUST_TOOLCHAIN) && \
           yum install zip -y && \
           make package")
