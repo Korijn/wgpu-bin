@@ -18,11 +18,11 @@ jobs:
         RUST_TOOLCHAIN: stable
         ARCH: 64
         OS_NAME: linux
-      # Linux-32: rust toolchain is currently broken :(
-      #   vmImage: ubuntu-16.04
-      #   RUST_TOOLCHAIN: stable-i686-unknown-linux-gnu
-      #   ARCH: 32
-      #   OS_NAME: linux
+      Linux-32:
+        vmImage: ubuntu-16.04
+        RUST_TOOLCHAIN: stable-i686-unknown-linux-gnu
+        ARCH: 32
+        OS_NAME: linux
       MacOS:
         vmImage: macOS-10.14
         RUST_TOOLCHAIN: stable
