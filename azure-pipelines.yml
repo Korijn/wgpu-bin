@@ -1,4 +1,7 @@
 trigger:
+  branches:
+    include:
+    - master
   tags:
     include:
     - v*
@@ -94,7 +97,7 @@ jobs:
       artifactName: dist
 - job: Release
   dependsOn: Build
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), ne(variables['Build.SourceBranchName'], 'master'))
   pool:
     vmImage: ubuntu-16.04
   steps:
