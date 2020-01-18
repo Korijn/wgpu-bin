@@ -73,7 +73,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain non
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain none
         export PATH=$HOME/.cargo/bin:$PATH
         rustup toolchain install --no-self-update $(RUST_TOOLCHAIN)
         rustup default $(RUST_TOOLCHAIN)
