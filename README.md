@@ -2,9 +2,9 @@
 
 # wgpu-bin
 
-Binary releases for [wgpu-native](https://github.com/gfx-rs/wgpu) for use in Python projects.
+Optimized binaries for [wgpu-native](https://github.com/gfx-rs/wgpu) for use in Python projects.
 
-That means there are binaries for the following platforms:
+That means each release includes binaries for the following platforms:
 
 * MacOS 64-bit
 * Windows 32-bit
