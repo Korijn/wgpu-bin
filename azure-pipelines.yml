@@ -50,7 +50,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        git clone -b $(SRC_TAG) --depth=1 https://github.com/gfx-rs/wgpu.git
+        git clone -b $(SRC_TAG) https://github.com/gfx-rs/wgpu.git
   - task: Bash@3
     displayName: Docker build
     condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
