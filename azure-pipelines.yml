@@ -15,6 +15,17 @@ jobs:
     vmImage: ubuntu-16.04
   steps:
   - task: Bash@3
+    displayName: git tag == git branch
+    inputs:
+      targetType: inline
+      script: |
+        set -x
+        IS_TAG_BUILD=$(expr $(git describe --tags) == $(Build.SourceBranchName))
+        echo "##vso[task.setvariable variable=IS_TAG_BUILD]$IS_TAG_BUILD"
+        if [[ $IS_TAG_BUILD == "0" ]]; then
+          echo This build was not triggered by a tag, aborting release
+        fi
+  - task: Bash@3
     displayName: Get wgpu src
     inputs:
       targetType: inline
@@ -128,7 +139,7 @@ jobs:
       artifactName: dist
 - job: Release
   dependsOn: Build
-  # condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   pool:
     vmImage: ubuntu-16.04
   steps:
@@ -137,7 +148,7 @@ jobs:
     inputs:
       targetType: inline
       script: |
-        set -ex
+        set -x
         IS_TAG_BUILD=$(expr $(git describe --tags) == $(Build.SourceBranchName))
         echo "##vso[task.setvariable variable=IS_TAG_BUILD]$IS_TAG_BUILD"
         if [[ $IS_TAG_BUILD == "0" ]]; then
