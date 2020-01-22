@@ -21,6 +21,19 @@ jobs:
       script: |
         set -ex
         git clone -b $(SRC_TAG) https://github.com/gfx-rs/wgpu.git
+  - task: Bash@3
+    displayName: Create commit-sha file
+    inputs:
+      targetType: inline
+      script: |
+        set -ex
+        cd wgpu
+        git describe --tags > ../commit-sha
+  - task: PublishBuildArtifacts@1
+    displayName: Publish
+    inputs:
+      pathtoPublish: commit-sha
+      artifactName: dist
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
@@ -131,6 +144,7 @@ jobs:
       repositoryName: 'Korijn/wgpu-bin'
       assets: |
         dist/*.zip
+        dist/commit-sha
       action: edit
       tag: $(Build.SourceBranchName)
       addChangeLog: false
