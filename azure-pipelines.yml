@@ -10,7 +10,24 @@ variables:
   SRC_TAG: master
 
 jobs:
+- job: Checkout
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - task: Bash@3
+    displayName: Get wgpu src
+    inputs:
+      targetType: inline
+      script: |
+        set -ex
+        git clone -b $(SRC_TAG) https://github.com/gfx-rs/wgpu.git
+  - task: PublishBuildArtifacts@1
+    displayName: Publish
+    inputs:
+      pathtoPublish: wgpu
+      artifactName: wgpu
 - job: Build
+  dependsOn: Checkout
   strategy:
     matrix:
       Linux:
@@ -44,13 +61,11 @@ jobs:
   pool:
     vmImage: $(vmImage)
   steps:
-  - task: Bash@3
-    displayName: Get wgpu src
+  - task: DownloadBuildArtifacts@0
+    displayName: Download
     inputs:
-      targetType: inline
-      script: |
-        set -ex
-        git clone -b $(SRC_TAG) https://github.com/gfx-rs/wgpu.git
+      artifactName: wgpu
+      downloadPath: .
   - task: Bash@3
     displayName: Docker build
     condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
