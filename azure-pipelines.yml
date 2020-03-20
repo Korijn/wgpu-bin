@@ -30,7 +30,7 @@ jobs:
       script: |
         set -ex
         cd wgpu
-        git describe --tags > ../commit-sha
+        git rev-parse --short HEAD > ../commit-sha
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
