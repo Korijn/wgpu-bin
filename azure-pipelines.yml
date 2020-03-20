@@ -7,7 +7,7 @@ trigger:
     - v*
 
 variables:
-  SRC_TAG: master
+  SRC_TAG: 153c7f3f08ece7a1689f3cc4c69aec0632ac1468
 
 jobs:
 - job: Checkout
@@ -20,7 +20,9 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        git clone -b $(SRC_TAG) https://github.com/gfx-rs/wgpu.git
+        git clone https://github.com/gfx-rs/wgpu.git
+        cd wgpu
+        git checkout $(SRC_TAG)
   - task: Bash@3
     displayName: Create commit-sha file
     inputs:
