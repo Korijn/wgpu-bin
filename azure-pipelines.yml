@@ -7,7 +7,7 @@ trigger:
     - v*
 
 variables:
-  SRC_TAG: 153c7f3f08ece7a1689f3cc4c69aec0632ac1468
+  SRC_TAG: 83d49815ed5ba1bd35f58f4c1967c3a68fb04ce7
 
 jobs:
 - job: Checkout
