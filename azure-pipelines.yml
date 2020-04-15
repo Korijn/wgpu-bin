@@ -122,6 +122,7 @@ jobs:
       script: |
         set -ex
         mkdir -p ./dist
+        mv wgpu/dist/*debug*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-debug.zip
         mv wgpu/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
