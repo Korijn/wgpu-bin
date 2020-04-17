@@ -122,8 +122,8 @@ jobs:
       script: |
         set -ex
         mkdir -p ./dist
-        mv wgpu-native/dist/*debug*.zip ./dist/wgpu-native-$(OS_NAME)-$(ARCH)-debug.zip
-        mv wgpu-native/dist/*release*.zip ./dist/wgpu-native-$(OS_NAME)-$(ARCH)-release.zip
+        mv wgpu-native/dist/*debug*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-debug.zip
+        mv wgpu-native/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
