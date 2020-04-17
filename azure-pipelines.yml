@@ -88,7 +88,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        CID=$(docker create -t -w /tmp/wgpu-native -v $PWD/wgpu:/tmp/src:ro quay.io/pypa/$(IMAGE) bash -c "\
+        CID=$(docker create -t -w /tmp/wgpu-native -v $PWD/wgpu-native:/tmp/src:ro quay.io/pypa/$(IMAGE) bash -c "\
           cp -r /tmp/src/. . && \
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
