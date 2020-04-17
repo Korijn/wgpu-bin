@@ -7,7 +7,7 @@ trigger:
     - v*
 
 variables:
-  SRC_TAG: 83d49815ed5ba1bd35f58f4c1967c3a68fb04ce7
+  SRC_TAG: a0507408f83ac2b6825c7fc1e3a8cee43042bc90
 
 jobs:
 - job: Checkout
@@ -20,7 +20,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        git clone https://github.com/gfx-rs/wgpu.git
+        git clone https://github.com/gfx-rs/wgpu-native.git
         cd wgpu
         git checkout $(SRC_TAG)
   - task: Bash@3
