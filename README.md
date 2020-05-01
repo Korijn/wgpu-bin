@@ -2,7 +2,7 @@
 
 # wgpu-bin
 
-Automated 32 and 64-bit [wgpu-native](https://github.com/gfx-rs/wgpu) builds for MacOS, Windows and Manylinux1.
+Automated 32 and 64-bit [wgpu-native](https://github.com/gfx-rs/wgpu-native/) builds for MacOS, Windows and Manylinux1.
 
 Downloads are available under [releases](https://github.com/Korijn/wgpu-bin/releases).
 
