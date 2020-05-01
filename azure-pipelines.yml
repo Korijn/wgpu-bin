@@ -7,7 +7,7 @@ trigger:
     - v*
 
 variables:
-  SRC_TAG: 83d49815ed5ba1bd35f58f4c1967c3a68fb04ce7
+  SRC_TAG: a0507408f83ac2b6825c7fc1e3a8cee43042bc90
 
 jobs:
 - job: Checkout
@@ -20,8 +20,8 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        git clone https://github.com/gfx-rs/wgpu.git
-        cd wgpu
+        git clone https://github.com/gfx-rs/wgpu-native.git
+        cd wgpu-native
         git checkout $(SRC_TAG)
   - task: Bash@3
     displayName: Create commit-sha file
@@ -29,7 +29,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        cd wgpu
+        cd wgpu-native
         git rev-parse --short HEAD > ../commit-sha
   - task: PublishBuildArtifacts@1
     displayName: Publish
@@ -39,8 +39,8 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
-      pathtoPublish: wgpu
-      artifactName: wgpu
+      pathtoPublish: wgpu-native
+      artifactName: wgpu-native
 - job: Build
   dependsOn: Checkout
   strategy:
@@ -79,7 +79,7 @@ jobs:
   - task: DownloadBuildArtifacts@0
     displayName: Download
     inputs:
-      artifactName: wgpu
+      artifactName: wgpu-native
       downloadPath: .
   - task: Bash@3
     displayName: Docker build
@@ -88,7 +88,7 @@ jobs:
       targetType: inline
       script: |
         set -ex
-        CID=$(docker create -t -w /tmp/wgpu -v $PWD/wgpu:/tmp/src:ro quay.io/pypa/$(IMAGE) bash -c "\
+        CID=$(docker create -t -w /tmp/wgpu-native -v $PWD/wgpu-native:/tmp/src:ro quay.io/pypa/$(IMAGE) bash -c "\
           cp -r /tmp/src/. . && \
           rm -rf ./dist && \
           export PATH=/root/.cargo/bin:\$PATH && \
@@ -99,8 +99,8 @@ jobs:
           yum install zip -y && \
           make package")
         docker start -ai $CID
-        mkdir -p wgpu/dist
-        docker cp $CID:/tmp/wgpu/dist/. wgpu/dist/.
+        mkdir -p wgpu-native/dist
+        docker cp $CID:/tmp/wgpu-native/dist/. wgpu-native/dist/.
         docker rm $CID
   - task: Bash@3
     displayName: Host build
@@ -113,7 +113,7 @@ jobs:
         export PATH=$HOME/.cargo/bin:$PATH
         rustup toolchain install --no-self-update $(RUST_TOOLCHAIN)
         rustup default $(RUST_TOOLCHAIN)
-        cd wgpu
+        cd wgpu-native
         make package
   - task: Bash@3
     displayName: Pre-publish
@@ -122,8 +122,8 @@ jobs:
       script: |
         set -ex
         mkdir -p ./dist
-        mv wgpu/dist/*debug*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-debug.zip
-        mv wgpu/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
+        mv wgpu-native/dist/*debug*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-debug.zip
+        mv wgpu-native/dist/*release*.zip ./dist/wgpu-$(OS_NAME)-$(ARCH)-release.zip
   - task: PublishBuildArtifacts@1
     displayName: Publish
     inputs:
