@@ -2,6 +2,8 @@
 
 # wgpu-bin
 
+Downloads are available under [releases](https://github.com/Korijn/wgpu-bin/releases).
+
 Optimized binaries for [wgpu-native](https://github.com/gfx-rs/wgpu) for use in Python projects.
 
 That means each release includes binaries for the following platforms:
