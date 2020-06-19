@@ -1,3 +1,9 @@
+**DEPRECATION NOTICE**
+
+This code has been merged upstream and binary releases are now available: https://github.com/gfx-rs/wgpu-native
+
+---
+
 [![Build Status](https://korijn.visualstudio.com/wgpu-bin/_apis/build/status/Korijn.wgpu-bin?branchName=master)](https://korijn.visualstudio.com/wgpu-bin/_build/latest?definitionId=2&branchName=master)
 
 # wgpu-bin
